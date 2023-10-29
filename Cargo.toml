@@ -1,0 +1,20 @@
+[package]
+name = "caster"
+version = "0.0.1"
+authors = ["Jerboa"]
+
+edition = "2021"
+
+[[bin]]
+name = "server"
+path = "src/server.rs"
+
+[dependencies]
+tokio = { version = "1", features = ["full"] }
+warp = "0.3"
+
+[profile.dev]
+opt-level = 0
+
+[profile.release]
+opt-level = 3

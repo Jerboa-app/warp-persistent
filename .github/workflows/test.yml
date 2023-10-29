@@ -1,0 +1,40 @@
+on: [push]
+
+name: CI
+
+jobs:
+  build_and_test:
+    name: Caster CI
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+      - run: cargo build --release
+      - run: cargo test --all --release            
+
+  test_server:
+    steps:
+      - run: |
+            ./target/release/server &
+            ./target/debug/server &
+            a=$(curl 127.0.0.1:3030)
+            if [[ "$a" = "\"Blocked\"" ]]; then 
+                exit 1
+            fi
+            ./target/debug/server &
+            a=$(curl 127.0.0.1:3030)
+            if [[ "$a" = "\"Blocked\"" ]]; then 
+                exit 1
+            fi
+            ./target/debug/server &
+            a=$(curl 127.0.0.1:3030)
+            if [[ "$a" = "\"Blocked\"" ]]; then 
+                exit 1
+            fi
+            ./target/debug/server &
+            a=$(curl 127.0.0.1:3030)
+            if [[ "$a" = "\"Not Blocked\"" ]]; then 
+                exit 1
+            fi
